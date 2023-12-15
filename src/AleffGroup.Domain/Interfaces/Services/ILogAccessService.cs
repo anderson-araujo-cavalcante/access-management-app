@@ -2,7 +2,7 @@
 
 namespace AleffGroup.Domain.Interfaces.Services
 {
-    public interface ILogAccessService : IServiceBase<LogAccess, int>
+    public interface ILogAccessService : IServiceBase<LogAccess>
     {
     }
 }

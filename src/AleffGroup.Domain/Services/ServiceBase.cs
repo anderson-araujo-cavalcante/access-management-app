@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace AleffGroup.Domain.Services
 {
-    public class ServiceBase<TEntity, TKey> : IDisposable, IServiceBase<TEntity, TKey> where TEntity : class
+    public class ServiceBase<TEntity> : IDisposable, IServiceBase<TEntity> where TEntity : class
     {
-        private readonly IRepositoryBase<TEntity, TKey> _repository;
+        private readonly IRepositoryBase<TEntity> _repository;
 
-        public ServiceBase(IRepositoryBase<TEntity, TKey> repository)
+        public ServiceBase(IRepositoryBase<TEntity> repository)
         {
             _repository = repository;
         }
@@ -24,7 +24,7 @@ namespace AleffGroup.Domain.Services
             return _repository.GetAll();
         }
 
-        public TEntity GetById(TKey id)
+        public TEntity GetById(int id)
         {
             return _repository.GetById(id);
         }
@@ -34,7 +34,7 @@ namespace AleffGroup.Domain.Services
             _repository.Remove(entity);
         }
 
-        public void Remove(TKey id)
+        public void Remove(int id)
         {
             _repository.Remove(id);
         }

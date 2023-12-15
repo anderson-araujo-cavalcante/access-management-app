@@ -1,59 +1,87 @@
-﻿using AleffGroup.WebMvc.ViewModels;
+﻿using AleffGroup.Application.Interfaces;
+using AleffGroup.Domain.Entities;
+using AleffGroup.WebMvc.ViewModels;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AleffGroup.WebMvc.Controllers
 {
     public class UserController : Controller
     {
-        public UserViewModel UserViewModelMoc = new UserViewModel() {UserId = 1, Name="TST NAME", Login="LOGIN", Senha="Snh", IsAdmin=false};
+        private readonly IUserAppService _userApp;
+        private readonly IMapper _mapper;
+
+        public UserController(IUserAppService userApp,
+            IMapper mapper)
+        {
+            _userApp = userApp ?? throw new ArgumentNullException(nameof(userApp));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+
         public ActionResult Index()
         {
-            //return View(Enumerable.Empty<UserViewModel>());
-            return View(new List<UserViewModel>() { UserViewModelMoc });
+            var users = _userApp.GetAll();
+            return View(_mapper.Map<IEnumerable<UserViewModel>>(users));
         }
 
         public ActionResult Details(int id)
         {
-            return View();
+            var user = _userApp.GetById(id);
+            return View(_mapper.Map<UserViewModel>(user));
         }
 
         public ActionResult Create()
         {
-            return View(UserViewModelMoc);
+            return View(new UserViewModel());
         }
 
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(UserViewModel user)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    var userDomain = _mapper.Map<User>(user);
+                    _userApp.Add(userDomain);
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+
+                return View(user);
             }
             catch
             {
                 return View();
             }
         }
-       
+
         public ActionResult Edit(int id)
         {
-            return View(UserViewModelMoc);
+            var user = _userApp.GetById(id);
+            var userViewModel = _mapper.Map<UserViewModel>(user);
+
+            return View(userViewModel);
         }
 
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(UserViewModel user)
         {
             try
             {
-                // TODO: Add update logic here
+                if (ModelState.IsValid)
+                {
+                    var userDomain = _mapper.Map<User>(user);
+                    _userApp.Update(userDomain);
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+
+                return View(user);
             }
             catch
             {
@@ -63,15 +91,20 @@ namespace AleffGroup.WebMvc.Controllers
 
         public ActionResult Delete(int id)
         {
-            return View(UserViewModelMoc);
+            var user = _userApp.GetById(id);
+            var userViewModel = _mapper.Map<UserViewModel>(user);
+
+            return View(userViewModel);
         }
 
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var user = _userApp.GetById(id);
+                _userApp.Remove(user);
 
                 return RedirectToAction("Index");
             }

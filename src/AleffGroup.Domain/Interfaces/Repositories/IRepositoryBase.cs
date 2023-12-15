@@ -2,14 +2,14 @@
 
 namespace AleffGroup.Domain.Interfaces.Repositories
 {
-    public interface IRepositoryBase<TEntity, TKey> where TEntity : class
+    public interface IRepositoryBase<TEntity> where TEntity : class
     {
         void Add(TEntity entity);
-        TEntity GetById(TKey id);
+        TEntity GetById(int id);
         IEnumerable<TEntity> GetAll();
         void Update(TEntity entity);
         void Remove(TEntity entity);
-        void Remove(TKey id);
+        void Remove(int id);
         void Dispose();
     }
 }

@@ -1,16 +1,13 @@
-﻿using AleffGroup.Domain.Entities;
+﻿using AleffGroup.Application.Interfaces;
+using AleffGroup.Domain.Entities;
 using AleffGroup.Domain.Interfaces.Services;
 
 namespace AleffGroup.Application.AppServices
 {
-    public class UserAppService : AppServiceBase<User, int>, Interfaces.IUserAppService
+    public class UserAppService : AppServiceBase<User>, IUserAppService
     {
-        //private readonly IUserService _userService;
-
-        public UserAppService(IUserService clienteService)
-            : base(clienteService)
+        public UserAppService(IUserService clienteService) : base(clienteService)
         {
-           // _userService = clienteService;
         }
     }
 }

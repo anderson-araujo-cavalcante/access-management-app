@@ -2,7 +2,7 @@
 
 namespace AleffGroup.Domain.Interfaces.Repositories
 {
-    public interface ILogAccessRepository : IRepositoryBase<LogAccess, int>
+    public interface ILogAccessRepository : IRepositoryBase<LogAccess>
     {
     }
 }

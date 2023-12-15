@@ -2,14 +2,14 @@
 
 namespace AleffGroup.Application.Interfaces
 {
-    public interface IAppServiceBase<TEntity, TKey> where TEntity : class
+    public interface IAppServiceBase<TEntity> where TEntity : class
     {
         void Add(TEntity entity);
-        TEntity GetById(TKey id);
+        TEntity GetById(int id);
         IEnumerable<TEntity> GetAll();
         void Update(TEntity entity);
         void Remove(TEntity entity);
-        void Remove(TKey id);
+        void Remove(int id);
         void Dispose();
     }
 }

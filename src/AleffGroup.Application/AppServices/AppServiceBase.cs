@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AleffGroup.Application.Interfaces;
+﻿using AleffGroup.Application.Interfaces;
 using AleffGroup.Domain.Interfaces.Services;
+using System;
+using System.Collections.Generic;
 
 namespace AleffGroup.Application.AppServices
 {
-    public class AppServiceBase<TEntity, TKey> : IDisposable, IAppServiceBase<TEntity, TKey> where TEntity : class
+    public class AppServiceBase<TEntity> : IDisposable, IAppServiceBase<TEntity> where TEntity : class
     {
-        private readonly IServiceBase<TEntity, TKey> _serviceBase;
-        public AppServiceBase(IServiceBase<TEntity, TKey> serviceBase)
+        private readonly IServiceBase<TEntity> _serviceBase;
+        public AppServiceBase(IServiceBase<TEntity> serviceBase)
         {
-                _serviceBase = serviceBase ?? throw new ArgumentNullException(nameof(serviceBase));
+            _serviceBase = serviceBase ?? throw new ArgumentNullException(nameof(serviceBase));
         }
         public void Add(TEntity entity)
         {
             _serviceBase.Add(entity);
-        }     
+        }
 
         public IEnumerable<TEntity> GetAll()
         {
             return _serviceBase.GetAll();
         }
 
-        public TEntity GetById(TKey id)
+        public TEntity GetById(int id)
         {
-           return _serviceBase.GetById(id);
+            return _serviceBase.GetById(id);
         }
 
         public void Remove(TEntity entity)
@@ -33,7 +32,7 @@ namespace AleffGroup.Application.AppServices
             _serviceBase.Remove(entity);
         }
 
-        public void Remove(TKey id)
+        public void Remove(int id)
         {
             _serviceBase.Remove(id);
         }

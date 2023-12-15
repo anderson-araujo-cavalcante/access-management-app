@@ -2,7 +2,7 @@
 
 namespace AleffGroup.Application.Interfaces
 {
-    public interface IUserAppService : IAppServiceBase<User, int>
+    public interface IUserAppService : IAppServiceBase<User>
     {
     }
 }

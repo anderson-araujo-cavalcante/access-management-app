@@ -2,7 +2,7 @@
 
 namespace AleffGroup.Domain.Interfaces.Repositories
 {
-    public interface IUserRepository : IRepositoryBase<User, int>
+    public interface IUserRepository : IRepositoryBase<User>
     {
     }
 }
