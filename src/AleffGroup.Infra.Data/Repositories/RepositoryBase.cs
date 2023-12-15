@@ -1,5 +1,4 @@
 ﻿using AleffGroup.Domain.Interfaces.Repositories;
-using AleffGroup.Infra.Data.Interfaces;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace AleffGroup.Infra.Data.Repositories
     public abstract class RepositoryBase<TEntity> : IDisposable, IRepositoryBase<TEntity> where TEntity : class
     {
         protected string StringConnection { get; } = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-       
+
         protected readonly IDbConnection connection;
         protected readonly IDbTransaction transaction;
 

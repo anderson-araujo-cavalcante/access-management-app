@@ -18,7 +18,8 @@ namespace AleffGroup.WebMvc.ViewModels
         public string Login { get; set; }
 
         [Required(ErrorMessage = "Preencha o campo E-mail")]
-        [MaxLength(10, ErrorMessage = "Máximo {0} caracteres")]
+        [MaxLength(50, ErrorMessage = "Máximo {0} caracteres")]
+        [MinLength(10, ErrorMessage = "Mínimo {0} caracteres")]
         [DisplayName("Senha")]
         public string Senha { get; set; }
 
