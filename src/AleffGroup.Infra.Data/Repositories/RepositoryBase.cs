@@ -42,11 +42,33 @@ namespace AleffGroup.Infra.Data.Repositories
             }
         }
 
-        protected void Execute(TEntity entity, string query)
+        protected void ExecuteQuery(TEntity entity, string query)
         {
             using (IDbConnection dbConnection = new SqlConnection(StringConnection))
             {
                 var result = dbConnection.Execute(query, entity);
+            }
+        }
+
+        protected TEntity ExecuteQueryProcedure(string proc, DynamicParameters param)
+        {
+            using (IDbConnection dbConnection = new SqlConnection(StringConnection))
+            {
+                var user = dbConnection.QuerySingle<TEntity>(
+                    proc,
+                    param,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                return user;
+            }
+        }
+
+        protected void ExecuteProcedure(string proc, DynamicParameters param)
+        {
+            using (IDbConnection dbConnection = new SqlConnection(StringConnection))
+            {
+                dbConnection.Execute(proc, param, commandType: CommandType.StoredProcedure);
             }
         }
 

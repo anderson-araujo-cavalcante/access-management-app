@@ -30,6 +30,7 @@ namespace AleffGroup.WebMvc
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
             container.Register<IUserAppService, UserAppService>(Lifestyle.Scoped);
             container.Register<IUserService, UserService>(Lifestyle.Scoped);
+            container.Register<ILoginAppService, LoginAppService>(Lifestyle.Scoped);
 
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
 

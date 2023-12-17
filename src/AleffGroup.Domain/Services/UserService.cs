@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace AleffGroup.Domain.Services
 {
-    public class UserService : IUserService
+    public class UserService : ServiceBase<User>, IUserService
     {
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository clienteRepository)
+        public UserService(IUserRepository userRepository) : base(userRepository)
         {
-            _userRepository = clienteRepository ?? throw new ArgumentNullException(nameof(clienteRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public void Add(User entity)
@@ -24,30 +24,30 @@ namespace AleffGroup.Domain.Services
             _userRepository.Add(entity);
         }
 
-        public IEnumerable<User> GetAll()
-        {
-            return _userRepository.GetAll();
-        }
+        //public IEnumerable<User> GetAll()
+        //{
+        //    return _userRepository.GetAll();
+        //}
 
-        public User GetById(int id)
-        {
-            return _userRepository.GetById(id);
-        }
+        //public User GetById(int id)
+        //{
+        //    return _userRepository.GetById(id);
+        //}
 
-        public void Remove(User entity)
-        {
-            _userRepository.Remove(entity);
-        }
+        //public void Remove(User entity)
+        //{
+        //    _userRepository.Remove(entity);
+        //}
 
-        public void Remove(int id)
-        {
-            _userRepository.Remove(id);
-        }
+        //public void Remove(int id)
+        //{
+        //    _userRepository.Remove(id);
+        //}
 
-        public void Update(User entity)
-        {
-            _userRepository.Update(entity);
-        }
+        //public void Update(User entity)
+        //{
+        //    _userRepository.Update(entity);
+        //}
 
         public void ValidateUserPassword(string password)
         {
@@ -77,6 +77,11 @@ namespace AleffGroup.Domain.Services
             //caracter duplicado
             var removeDuplicate = new string(stringValidate.ToCharArray().Distinct().ToArray());
             if (removeDuplicate.Length < stringValidate.Length) msg.Add("A senha não deve possuir caracteres repetidos");
+        }
+
+        public User GetUserByName(string username)
+        {
+            return _userRepository.GetByUserName(username);
         }
 
         public void Dispose()
