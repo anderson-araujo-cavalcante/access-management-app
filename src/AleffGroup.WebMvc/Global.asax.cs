@@ -26,11 +26,17 @@ namespace AleffGroup.WebMvc
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
 
+            //container.Register<IHttpContextAccessor, HttpContextAccessor>(Lifestyle.Singleton);
+
 
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
-            container.Register<IUserAppService, UserAppService>(Lifestyle.Scoped);
-            container.Register<IUserService, UserService>(Lifestyle.Scoped);
+            container.Register<ILogAccessRepository, LogAccessRepository>(Lifestyle.Scoped);            
+           
             container.Register<ILoginAppService, LoginAppService>(Lifestyle.Scoped);
+            container.Register<IUserAppService, UserAppService>(Lifestyle.Scoped);
+
+            container.Register<IUserService, UserService>(Lifestyle.Scoped);
+            container.Register<ILogAccessService, LogAccessService>(Lifestyle.Scoped);
 
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
 
