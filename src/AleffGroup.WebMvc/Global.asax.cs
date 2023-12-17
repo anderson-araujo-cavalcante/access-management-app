@@ -34,6 +34,7 @@ namespace AleffGroup.WebMvc
            
             container.Register<ILoginAppService, LoginAppService>(Lifestyle.Scoped);
             container.Register<IUserAppService, UserAppService>(Lifestyle.Scoped);
+            container.Register<ILogAccessAppService, LogAccessAppService>(Lifestyle.Scoped);
 
             container.Register<IUserService, UserService>(Lifestyle.Scoped);
             container.Register<ILogAccessService, LogAccessService>(Lifestyle.Scoped);

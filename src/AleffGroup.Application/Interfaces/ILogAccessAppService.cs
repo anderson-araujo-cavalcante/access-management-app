@@ -1,9 +1,9 @@
 ﻿using AleffGroup.Domain.Entities;
 using System.Collections.Generic;
 
-namespace AleffGroup.Domain.Interfaces.Services
+namespace AleffGroup.Application.Interfaces
 {
-    public interface ILogAccessService : IServiceBase<LogAccess>
+    public interface ILogAccessAppService : IAppServiceBase<LogAccess>
     {
         IEnumerable<LogAccess> GetAllByUserId(int? userId);
     }

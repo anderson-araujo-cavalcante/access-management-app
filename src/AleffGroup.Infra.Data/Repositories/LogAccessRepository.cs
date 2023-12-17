@@ -1,147 +1,72 @@
 ﻿using AleffGroup.Domain.Entities;
 using AleffGroup.Domain.Interfaces.Repositories;
-using System;
+using Dapper;
 using System.Collections.Generic;
 using System.Data;
+using static Dapper.SqlMapper;
 using System.Data.SqlClient;
 
 namespace AleffGroup.Infra.Data.Repositories
 {
-    public class LogAccessRepository : RepositoryBase<LogAccess, int>, ILogAccessRepository
+    public class LogAccessRepository : RepositoryBase<LogAccess>, ILogAccessRepository
     {
+        private const string TABLE_NAME = "LogsAccess";
+
         public override void Add(LogAccess entity)
         {
-            using (var conn = new SqlConnection(StringConnection))
-            {
-                string procedure = "INSERT INTO LogAccess (UserId, DateTimeAccess, AdressIp) VALUES (@userId, @dateTimeAccess, @adressIp)";
-                SqlCommand cmd = new SqlCommand(procedure, conn)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.AddWithValue("@userId", entity.UserId);
-                cmd.Parameters.AddWithValue("@dateTimeAccess", entity.DateTimeAccess);
-                cmd.Parameters.AddWithValue("@adressIp", entity.AdressIp);
-                try
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
+            string insertQuery = $@"INSERT INTO {TABLE_NAME} VALUES (@UserId, @DateTimeAccess, @AdressIp)";
+            base.ExecuteQuery(entity, insertQuery);
         }
 
         public override IEnumerable<LogAccess> GetAll()
         {
-            string sql = "SELECT LogAcessoId, UserId, DateTimeAccess, AdressIp FROM LogAccess ORDER BY Name";
-            using (var conn = new SqlConnection(StringConnection))
-            {
-                var cmd = new SqlCommand(sql, conn);
-                List<LogAccess> list = new List<LogAccess>();
-                LogAccess log = null;
-                try
-                {
-                    conn.Open();
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            log = new LogAccess();
-                            log.LogAcessoId = (int)reader["LogAcessoId"];
-                            log.UserId = (int)reader["UserId"];
-                            log.DateTimeAccess = Convert.ToDateTime(reader["DateTimeAccess"].ToString());
-                            log.AdressIp = reader["AdressIp"].ToString();
-                            list.Add(log);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                return list;
-            }
+            string sql = $"SELECT LogAcessoId, UserId, DateTimeAccess, AdressIp FROM {TABLE_NAME}";
+            return base.GetAll(sql);
         }
 
         public override LogAccess GetById(int id)
         {
-            using (var conn = new SqlConnection(StringConnection))
-            {
-                string sql = "SELECT LogAcessoId, UserId, DateTimeAccess, AdressIp FROM LogAccess WHERE LogAcessoId=@LogAcessoId";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@LogAcessoId", id);
-                LogAccess log = null;
-                try
-                {
-                    conn.Open();
-                    using (var reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        if (reader.HasRows)
-                        {
-                            if (reader.Read())
-                            {
-                                log = new LogAccess();
-                                log.LogAcessoId = (int)reader["LogAcessoId"];
-                                log.UserId = (int)reader["UserId"];
-                                log.DateTimeAccess = Convert.ToDateTime(reader["DateTimeAccess"].ToString());
-                                log.AdressIp = reader["AdressIp"].ToString();
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                return log;
-            }
+            string sql = $"SELECT LogAcessoId, UserId, DateTimeAccess, AdressIp FROM {TABLE_NAME} WHERE LogAcessoId = {id}";
+            return base.Find(sql);
         }
 
         public override void Remove(LogAccess entity)
         {
-            Remove(entity.UserId);
+            string sql = $"DELETE {TABLE_NAME} Where LogAcessoId=@LogAcessoId";
+            base.ExecuteQuery(entity, sql);
         }
 
         public override void Remove(int id)
         {
-            using (var conn = new SqlConnection(StringConnection))
-            {
-                string sql = "DELETE LogAccess Where LogAcessoId=@LogAcessoId";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@LogAcessoId", id);
-                try
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
+            string sql = $"DELETE {TABLE_NAME} Where LogAcessoId=@LogAcessoId";
+            base.ExecuteQuery(new LogAccess { LogAcessoId = id }, sql);
         }
 
         public override void Update(LogAccess entity)
         {
-            using (var conn = new SqlConnection(StringConnection))
+            string sql = $"UPDATE {TABLE_NAME} SET UserId=@UserId, DateTimeAccess=@SateTimeAccess, AdressIp=@AdressIp Where LogAcessoId=@LogAcessoId";
+            base.ExecuteQuery(entity, sql);
+        }
+
+        public IEnumerable<LogAccess> GetAllByUserId(int? userId)
+        {
+            var filter = userId.HasValue ? $"WHERE log.UserId = {userId.Value}" : string.Empty ;
+            string sql = $"SELECT " +
+                                    $"log.LogAcessoId, log.UserId, log.DateTimeAccess, log.AdressIp, u.UserId, u.Name " +
+                               $"FROM {TABLE_NAME} log " +
+                               $"JOIN Users u ON log.UserId = u.UserId " +
+                               $"{filter} " +
+                               $"ORDER BY log.DateTimeAccess";
+
+            using (IDbConnection dbConnection = new SqlConnection(StringConnection))
             {
-                string sql = "UPDATE LogAccess SET UserId=@userId, DateTimeAccess=@dateTimeAccess, AdressIp=@adressIp Where LogAcessoId=@logAcessoId";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@logAcessoId", entity.LogAcessoId);
-                cmd.Parameters.AddWithValue("@userId", entity.UserId);
-                cmd.Parameters.AddWithValue("@dateTimeAccess", entity.DateTimeAccess);
-                cmd.Parameters.AddWithValue("@adressIp", entity.AdressIp);
-                try
+                dbConnection.Open();
+                return dbConnection.Query<LogAccess, User, LogAccess>(sql, map: (logAccess, user) =>
                 {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                    logAccess.User = user;
+                    return logAccess;
+                },
+                splitOn: "UserId");
             }
         }
     }

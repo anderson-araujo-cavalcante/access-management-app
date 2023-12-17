@@ -6,6 +6,7 @@ namespace AleffGroup.Domain.Entities
     {
         public int LogAcessoId { get; set; }
         public int UserId { get; set; }
+        public User User { get; set; }
         public DateTime DateTimeAccess { get; set; }
         public string AdressIp { get; set; }
 

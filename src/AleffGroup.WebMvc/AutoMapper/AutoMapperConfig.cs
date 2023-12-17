@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.Ajax.Utilities;
+﻿using AleffGroup.WebMvc.AutoMapper.Profiles;
+using AutoMapper;
 
 namespace AleffGroup.WebMvc.AutoMapper
 {
@@ -11,6 +11,7 @@ namespace AleffGroup.WebMvc.AutoMapper
             config =>
             {
                 config.AddProfile<UserProfile>();
+                config.AddProfile<LogAccessProfile>();
             }
         );
 
