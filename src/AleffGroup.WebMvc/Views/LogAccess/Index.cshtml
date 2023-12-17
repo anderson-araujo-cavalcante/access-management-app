@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AleffGroup.WebMvc.ViewModels.LogAccessViewModel>
+﻿@model AleffGroup.WebMvc.ViewModels.LogAccessPageViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -9,29 +9,40 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.DisplayName("Data/Hora Acesso")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DateTimeAccess)
+            @Html.DisplayName("Nome do Usuário")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AdressIp)
+            @Html.DisplayName("Endereço IP")
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateTimeAccess)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AdressIp)
-        </td>
-    </tr>
-}
+    @foreach (var item in Model.LogAccessViewModel)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeAccess)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdressIp)
+            </td>
+        </tr>
+    }
 
 </table>
+
+<h1>Acessos por Hora:</h1>
+<hr />
+<div class="row">
+    <div>
+        <div class="col-md-12 col-md-6">
+            @(Model.HighCharts)
+        </div>
+    </div>
+</div>

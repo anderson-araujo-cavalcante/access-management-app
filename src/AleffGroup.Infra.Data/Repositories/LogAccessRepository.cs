@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using static Dapper.SqlMapper;
 using System.Data.SqlClient;
+using AleffGroup.Domain.Model;
 
 namespace AleffGroup.Infra.Data.Repositories
 {
@@ -67,6 +68,26 @@ namespace AleffGroup.Infra.Data.Repositories
                     return logAccess;
                 },
                 splitOn: "UserId");
+            }
+        }
+
+        public IEnumerable<LogTime> GetPeriodByUserId(int? userId)
+        {
+            var periodInMinute = 60;
+            string proc = "proc_logs_selectby_user";
+            var param = new DynamicParameters();
+            param.Add("@UserId", value: userId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add("@Time", value: periodInMinute, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            using (IDbConnection dbConnection = new SqlConnection(StringConnection))
+            {
+                var logs = dbConnection.Query<LogTime>(
+                    proc,
+                    param,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                return logs;
             }
         }
     }

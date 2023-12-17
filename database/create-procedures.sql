@@ -36,3 +36,19 @@ BEGIN
    WHERE Login = @Login;
 END;
 GO
+
+DROP PROCEDURE if exists [dbo].[proc_logs_selectby_user]
+GO
+CREATE PROCEDURE proc_logs_selectby_user @UserId int,  @Time int
+AS
+BEGIN       
+   SELECT
+   	UserId,
+   	DATEADD(MINUTE,(DATEDIFF(MINUTE, 0 , DateTimeAccess)/@Time)*@Time,0) AS Period, 
+   	COUNT(*) AS Total
+   FROM [LogsAccess]
+   WHERE UserId = @UserId
+   GROUP BY
+  	UserId, DATEADD(MINUTE,(DATEDIFF(MINUTE, 0 , DateTimeAccess)/@Time)*@Time,0)
+END;
+GO

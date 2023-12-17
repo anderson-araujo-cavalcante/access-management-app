@@ -1,6 +1,7 @@
 ﻿using AleffGroup.Application.Interfaces;
 using AleffGroup.Domain.Entities;
 using AleffGroup.Domain.Interfaces.Services;
+using AleffGroup.Domain.Model;
 using AleffGroup.Domain.Services;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,11 @@ namespace AleffGroup.Application.AppServices
         public IEnumerable<LogAccess> GetAllByUserId(int? userId)
         {
             return _logAccessService.GetAllByUserId(userId);
+        }
+
+        public IEnumerable<LogTime> GetPeriodByUserId(int? userId)
+        {
+            return _logAccessService.GetPeriodByUserId(userId);
         }
     }
 }
