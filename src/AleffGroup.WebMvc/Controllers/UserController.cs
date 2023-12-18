@@ -1,5 +1,6 @@
 ﻿using AleffGroup.Application.Interfaces;
 using AleffGroup.Domain.Entities;
+using AleffGroup.Domain.Extensions;
 using AleffGroup.WebMvc.ViewModels;
 using AutoMapper;
 using System;
@@ -53,9 +54,15 @@ namespace AleffGroup.WebMvc.Controllers
 
                 return View(user);
             }
-            catch
+            catch (PasswordException ex)
             {
-                return View();
+                ModelState.AddModelError("Senha", ex.Message);
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Exceptions", ex.Message);
+                return View(user);
             }
         }
 
@@ -63,6 +70,7 @@ namespace AleffGroup.WebMvc.Controllers
         {
             var user = _userApp.GetById(id);
             var userViewModel = _mapper.Map<UserViewModel>(user);
+            userViewModel.Senha = string.Empty;
 
             return View(userViewModel);
         }
@@ -83,9 +91,15 @@ namespace AleffGroup.WebMvc.Controllers
 
                 return View(user);
             }
-            catch
+            catch (PasswordException ex)
             {
-                return View();
+                ModelState.AddModelError("Senha", ex.Message);
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Exceptions", ex.Message);
+                return View(user);
             }
         }
 

@@ -1,11 +1,7 @@
 ﻿using AleffGroup.Application.Interfaces;
+using AleffGroup.Domain.Extensions;
 using AleffGroup.WebMvc.ViewModels;
-using Azure.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AleffGroup.WebMvc.Controllers
@@ -25,9 +21,15 @@ namespace AleffGroup.WebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel user)
+        public ActionResult Login(LoginViewModel login)
         {
-            if (ModelState.IsValid) 
+            if (login == null)
+            {
+                ModelState.AddModelError("MsgValidate", "Informe Login e Senha.");
+                return View("Index");
+            }
+
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -37,18 +39,24 @@ namespace AleffGroup.WebMvc.Controllers
                         ipAddress = Request.ServerVariables["REMOTE_ADDR"];
                     }
 
-                    _loginApp.Login(user.Login, user.Password, ipAddress);
+                    _loginApp.Login(login.Login, login.Password, ipAddress);
 
                     //Session["usuarioLogadoID"] = v.Id.ToString();
                     //Session["nomeUsuarioLogado"] = v.NomeUsuario.ToString();
                     return RedirectToAction("Index", "User");
                 }
+                catch (PasswordException ex)
+                {
+                    ModelState.AddModelError("MsgValidate", ex.Message);
+                    return View(login);
+                }
                 catch (Exception ex)
                 {
-                    throw;// ex.Message;
-                }                
+                    ModelState.AddModelError("Exceptions", ex.Message);
+                    return View(login);
+                }
             }
-            return View(user);
+            return View(login);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AleffGroup.Application.Interfaces;
 using AleffGroup.Domain.Entities;
+using AleffGroup.Domain.Extensions;
 using AleffGroup.Domain.Interfaces.Services;
 using AleffGroup.Infra.CrossCutting.Cryptography;
 using System;
@@ -20,12 +21,10 @@ namespace AleffGroup.Application.AppServices
 
         public void Login(string username, string password, string ip)
         {
-            var user = _userService.GetUserByName(username);
-            if (user == null) throw new ArgumentNullException(nameof(user)); 
-
+            var user = _userService.GetUserByName(username) ?? throw new PasswordException();
+            
             var passCrypt = MD5Hash.CalculateMD5Hash(password);
-            if (password != passCrypt) throw new ArgumentNullException(nameof(user));
-
+            if (password != passCrypt) throw new PasswordException();
 
             var log = new LogAccess()
             {
