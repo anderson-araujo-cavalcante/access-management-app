@@ -43,7 +43,7 @@ namespace AleffGroup.WebMvc.Controllers
 
                     //Session["usuarioLogadoID"] = v.Id.ToString();
                     //Session["nomeUsuarioLogado"] = v.NomeUsuario.ToString();
-                    return RedirectToAction("Index", "User");
+                    return RedirectToAction("Index", "LogAccess");
                 }
                 catch (PasswordException ex)
                 {
